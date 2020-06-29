@@ -1,0 +1,28 @@
+<%- include("header") -%>
+
+  <div class="box py-0" id="heading">
+    <h1 id=""> <%= listTitle %> </h1>
+  </div>
+
+  <div class="box">
+
+
+  <%  newListItems.forEach(function(item){ %>
+
+    <form action="/delete" method="post">
+      <div class="item">
+        <input type="checkbox" name="checkbox" value="<%=item._id%>" onChange="this.form.submit()">
+        <p class="overflow-auto"><%=item.name%></p>
+      </div>
+      <input class="overflow-auto" type="hidden" name="listName" value="<%= listTitle %>"></input>
+    </form>
+  <%  }) %>
+
+
+      <form class="item" action="/" method="post">
+        <input class ="flex-fill" type="text" name="newItem" placeholder="New Item" autocomplete="off">
+        <button  class="float-right ml-auto p-2 submit-btn" type="submit" name="list" value="<%= listTitle %>"><i class="fa fa-plus-circle fa-2x"></i></button>
+      </form>
+  </div>
+
+<%- include("footer") -%>
