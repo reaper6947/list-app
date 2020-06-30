@@ -17,9 +17,12 @@
 <body class="container">
 
   <nav class="navbar navbar-dark bg-dark rounded my-1 py-1">
-    <a class="navbar-brand"  id="nav-brand" href="#"></a>
-    <form class="form-inline">
+    <a class="navbar-brand"  id="nav-username" href="#" signedIn=""></a>
+    <form  class="form-inline">
       <button class="btn btn-sm btn-outline-secondary mr-1" type="button">Sort</button>
-      <button class="btn btn-sm btn-outline-secondary" type="button">edit</button>
+      
+    </form>
+    <form method="post" action="/edit">
+      <input type="submit" class="btn btn-sm btn-outline-secondary" name="edit" value="" id="edit-btn" signedIn = "" >
     </form>
   </nav>

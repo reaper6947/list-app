@@ -10,8 +10,9 @@ app.set("views", path.join(__dirname, "/public/views"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
-
+const shortid = require('shortid');
 //connect to database
+
 mongoose.connect(
   process.env.DBURL,
   { useNewUrlParser: true, useUnifiedTopology: true , useFindAndModify: false },
@@ -20,15 +21,11 @@ mongoose.connect(
   }
 );
 
-
-
-
-
-
-
 const itemsSchema = {
   name: String,
 };
+
+
 
 const Item = mongoose.model("Item", itemsSchema);
 
@@ -54,6 +51,7 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
+
 app.get("/", function (req, res) {
   Item.find({}, function (err, foundItems) {
     if (foundItems.length === 0) {
@@ -72,14 +70,12 @@ app.get("/", function (req, res) {
   });
 });
 
-app.get("/login", function (req, res){
-  res.render("login");
-})
 
 
 
+/*
 app.get("/:customListName", function (req, res) {
-  const customListName = _.capitalize(req.params.customListName);
+  const customListName = req.params.customListName ;
 
   List.findOne({ name: customListName }, function (err, foundList) {
     if (!err) {
@@ -103,6 +99,7 @@ app.get("/:customListName", function (req, res) {
     }
   });
 });
+*/
 
 app.post("/", function (req, res) {
   console.log(req.body);
@@ -124,6 +121,7 @@ app.post("/", function (req, res) {
     });
   }
 });
+
 
 app.post("/delete", function (req, res) {
   const checkedItemId = req.body.checkbox;
@@ -149,14 +147,33 @@ app.post("/delete", function (req, res) {
   }
 });
 
+
+
 app.post("/login", function (req, res) {
   let { username } = req.body;
-  
-
-
+  List.exists({ author: username }, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else if (result) {
+      console.log("true");
+      res.render("login", { userExists: "true" });
+    } else if (!result) {
+      console.log("false");
+      res.render("login", { userExists: "false" });
+    }
+  });
+  console.log(req.body);
 });
 
 
+app.get("/login", function (req, res) {
+  res.render("login",{userExists:""});
+});
+
+app.post("/edit", function (req, res) {
+  console.log(req.body);
+  res.redirect("/")
+});
 
 
 

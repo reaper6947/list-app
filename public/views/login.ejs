@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Open Sans', sans-serif;
-            margin-top: 10em;
+            margin-top: 9em;
             text-align: center;
             background: linear-gradient(to right, #b92b27, #1565c0) !important;
         }
@@ -19,7 +19,7 @@
             color: #ffffff;
         }
 
-        h1 {
+        h2 {
             font-size: 1.5em;
             color: #525252;
             padding: 1em;
@@ -27,10 +27,10 @@
 
         .box {
             background: #e0f0ea;
-            width: 350px;
+            width: 340px;
             border-radius: 6px;
             margin: 0 auto 0 auto;
-            padding: 0px 0px 70px 0px;
+            padding: 0px 0px 50px 0px;
             border: #2980b9 4px solid;
         }
 
@@ -50,9 +50,9 @@
 
         .btn {
             background: #95adbe;
-            width: 125px;
-            padding-top: 5px;
-            padding-bottom: 5px;
+            width: 120px;
+            padding-top: 8px;
+            padding-bottom: 8px;
             color: white;
             border-radius: 4px;
             border: #27ae60 1px solid;
@@ -75,7 +75,7 @@
         .btn2 {
             float: left;
             background: #3498db;
-            width: 125px;
+            width: 120px;
             padding-top: 8px;
             padding-bottom: 8px;
             color: white;
@@ -84,7 +84,7 @@
             margin-top: 20px;
             margin-bottom: 20px;
             font-weight: 800;
-            font-size: 0.8em;
+            font-size: 0.7em;
         }
 
         .btn2:hover {
@@ -100,48 +100,75 @@
 
 <body class="">
 
-    <div class="box" >
-        <h1>Enter Username</h1>
-        <form action="/login" method="post" >
-            <input class="email" type="text" placeholder="username" id="input" name="username"  />
-            <button class="btn mx-auto " type="submit" onclick="userSet()" id="change-btn">change</button>
-            <button class="btn mx-auto "><a href="/">go to home page</a></button>
+    <div class="box">
+        <div class="alert alert-primary" role="alert">
+            can't be empty and no more than 15 characters
+
+        </div>
+        <h2>Enter Username</h2>
+        <form action="/login" method="post" onSubmit="checkForm()">
+            <input class="email" type="text" placeholder="username" id="input" name="username" />
+            <button class="btn mx-auto" name="login-btn" value="" type="submit" id="change-btn">change</button>
         </form>
+        <input type="hidden" id="userSet" exists="<%- userExists %>" >
+        <button class="btn mx-auto "><a href="/">go to home page</a></button>
+
     </div> <!-- End Box -->
 
 
     <script>
-        if (localStorage.getItem("user-name") != undefined) {
-            let h1 = document.querySelector("h1");
-            h1.innerHTML = "your current username is " + localStorage.getItem("user-name") + ". now go to home page.";
+
+        if (localStorage.hasOwnProperty("user-name") && localStorage.getItem("user-name") != null) {
+            let h = document.querySelector("h2");
+            h.innerHTML = "your current username is " + localStorage.getItem("user-name") + ". now go to home page.";
             let btn = document.getElementById("change-btn");
-          //  btn.disabled = true;
+            //  btn.disabled = true;
+        } else {
+            let h = document.querySelector("h2");
+            h.innerHTML = "Enter username";
         }
 
 
-        function userSet() {
-            const validUser = function (userInfo) {
-                let userId = userInfo.trim();
-                if (
-                    userId === "" ||
-                    userId === null ||
-                    userId === undefined ||
-                    userId === "undefined" ||
-                    userId.length > 15
-                ) {
-                    let mat = Math.floor(Math.random() * 10) + 1;
-                    let str = Math.random().toString(36).substr(2, 3);
-                    return `user-${mat}${str}`;
-                } else {
-                    return userInfo;
-                }
-            };
 
-            let usr = document.getElementById("input").value;
-            let username = validUser(usr);
-            localStorage.setItem("user-name", username);
-            let h1 = document.querySelector("h1");
-            h1.innerHTML = "your new username is " + username + ". now go to home page.";
+        const validUser = function (id) {
+            let userInfo = document.getElementById(id).value;
+            let userId = userInfo.trim();
+            if (
+                userId === "" ||
+                userId === null ||
+                userId === undefined ||
+                userId === "undefined" ||
+                userId.length > 15
+            ) {
+                return false;
+            } else {
+                return true;
+            }
+        };
+
+        function checkForm() {
+            const elementId = "input";
+            if (validUser(elementId) && document.getElementById("userSet").getAttribute("exists") === false) {
+                console.log("true");
+                localStorage.setItem("user-name", document.getElementById(elementId).value);
+                let h = document.querySelector("h2");
+                h.innerHTML = "your new username is " + localStorage.getItem("user-name") + ". now go to home page.";
+                return true
+            }
+
+            else if (!validUser(elementId)) {
+                console.log("false");
+                let h1 = document.querySelector("h2");
+                h1.innerHTML = "invalid unsername , try again";
+                return false
+            } else if(document.getElementById("userSet").getAttribute("exists") === true){
+                console.log("false2");
+                let h1 = document.querySelector("h2");
+                h1.innerHTML = "username unavailable , try again";
+                console.log("already set");
+                return false
+            }
+
         }
     </script>
 </body>
