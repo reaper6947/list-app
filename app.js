@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 const shortid = require('shortid');
+const List = require("./model/listschema");
 //connect to database
 
 mongoose.connect(
@@ -25,17 +26,9 @@ const itemsSchema = {
   name: String,
 };
 
-
-
 const Item = mongoose.model("Item", itemsSchema);
 
-const listSchema = {
-  name: String,
-  author:String,
-  items: [{ name: String }],
-};
 
-const List = mongoose.model("List", listSchema);
 
 const item1 = new Item({
   name: "Welcome to your todolist!",
@@ -69,9 +62,6 @@ app.get("/", function (req, res) {
     }
   });
 });
-
-
-
 
 /*
 app.get("/:customListName", function (req, res) {
@@ -151,24 +141,33 @@ app.post("/delete", function (req, res) {
 
 app.post("/login", function (req, res) {
   let { username } = req.body;
-  List.exists({ author: username }, function (err, result) {
-    if (err) {
-      res.send(err);
-    } else if (result) {
-      console.log("true");
-      res.render("login", { userExists: "true" });
-    } else if (!result) {
-      console.log("false");
-      res.render("login", { userExists: "false" });
-    }
-  });
   console.log(req.body);
+  res.render("login");
 });
 
 
 app.get("/login", function (req, res) {
-  res.render("login",{userExists:""});
+  res.render("login");
 });
+
+app.get("/exists/:user", function (req, res) {
+ // console.log(req.params);
+  const { user } = req.params;
+  List.exists({ author: user }, function (err, result) {
+    if (err) {
+      res.json(err);
+    } else if (result) {
+     // console.log("true");
+      res.json(true);
+    } else if (!result) {
+    //  console.log("false");
+      res.json(false);
+    }
+  });
+});
+
+
+
 
 app.post("/edit", function (req, res) {
   console.log(req.body);
@@ -180,11 +179,7 @@ app.post("/edit", function (req, res) {
 
 
 
-
-app.get("/about", function (req, res) {
-  res.render("about");
-});
-
-app.listen(3000 || process.env.PORT, function () {
-  console.log("Server started on port 3000");
+const PORT = 3000 || process.env.PORT;
+app.listen(PORT, function () {
+  console.log("Server started on port "+ PORT );
 });

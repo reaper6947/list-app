@@ -5,172 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:700,600" rel="stylesheet" type="text/css">
-    <style>
-        body {
-            font-family: 'Open Sans', sans-serif;
-            margin-top: 9em;
-            text-align: center;
-            background: linear-gradient(to right, #b92b27, #1565c0) !important;
-        }
-
-        p {
-            font-size: 12px;
-            text-decoration: none;
-            color: #ffffff;
-        }
-
-        h2 {
-            font-size: 1.5em;
-            color: #525252;
-            padding: 1em;
-        }
-
-        .box {
-            background: #e0f0ea;
-            width: 340px;
-            border-radius: 6px;
-            margin: 0 auto 0 auto;
-            padding: 0px 0px 50px 0px;
-            border: #2980b9 4px solid;
-        }
-
-        .email {
-            background: #e0f0ea;
-            border: #ccc 1px solid;
-            border-bottom: #ccc 2px solid;
-            padding: 8px;
-            width: 220px;
-            color: #574f7d;
-            margin-top: 10px;
-            font-size: 1em;
-            border-radius: 4px;
-        }
-
-
-
-        .btn {
-            background: #95adbe;
-            width: 120px;
-            padding-top: 8px;
-            padding-bottom: 8px;
-            color: white;
-            border-radius: 4px;
-            border: #27ae60 1px solid;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            font-weight: 800;
-            font-size: 0.8em;
-        }
-
-        .btn:hover {
-            background: #2CC06B;
-        }
-
-        .btn:disabled,
-        .btn[disabled] {
-
-            display: none;
-        }
-
-        .btn2 {
-            float: left;
-            background: #3498db;
-            width: 120px;
-            padding-top: 8px;
-            padding-bottom: 8px;
-            color: white;
-            border-radius: 4px;
-            border: #2980b9 1px solid;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            font-weight: 800;
-            font-size: 0.7em;
-        }
-
-        .btn2:hover {
-            background: #3594D2;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/login.css" type="text/css">
 </head>
 
 <body class="">
 
     <div class="box">
         <div class="alert alert-primary" role="alert">
-            can't be empty and no more than 15 characters
-
+            <p>
+                can't be empty and no more than 15 characters, it is also your password , anyone with your username will gain access to your account
+            </p>
         </div>
-        <h2>Enter Username</h2>
-        <form action="/login" method="post" onSubmit="checkForm()">
-            <input class="email" type="text" placeholder="username" id="input" name="username" />
-            <button class="btn mx-auto" name="login-btn" value="" type="submit" id="change-btn">change</button>
+        
+        <form action="/login" method="post"   id="loginForm">
+            <label id="h-username" >Enter Username</label>
+            <input class="email" type="text" placeholder="username" id="input" name="username"   minlength=4 maxlength=15 required >
+            <button class="btn mx-auto" name="change" value="change" type="button" id="change-btn" onclick="checkUser(event)" >change</button>
         </form>
-        <input type="hidden" id="userSet" exists="<%- userExists %>" >
+        <input type="hidden" id="userSet"  >
         <button class="btn mx-auto "><a href="/">go to home page</a></button>
 
     </div> <!-- End Box -->
 
 
-    <script>
-
-        if (localStorage.hasOwnProperty("user-name") && localStorage.getItem("user-name") != null) {
-            let h = document.querySelector("h2");
-            h.innerHTML = "your current username is " + localStorage.getItem("user-name") + ". now go to home page.";
-            let btn = document.getElementById("change-btn");
-            //  btn.disabled = true;
-        } else {
-            let h = document.querySelector("h2");
-            h.innerHTML = "Enter username";
-        }
-
-
-
-        const validUser = function (id) {
-            let userInfo = document.getElementById(id).value;
-            let userId = userInfo.trim();
-            if (
-                userId === "" ||
-                userId === null ||
-                userId === undefined ||
-                userId === "undefined" ||
-                userId.length > 15
-            ) {
-                return false;
-            } else {
-                return true;
-            }
-        };
-
-        function checkForm() {
-            const elementId = "input";
-            if (validUser(elementId) && document.getElementById("userSet").getAttribute("exists") === false) {
-                console.log("true");
-                localStorage.setItem("user-name", document.getElementById(elementId).value);
-                let h = document.querySelector("h2");
-                h.innerHTML = "your new username is " + localStorage.getItem("user-name") + ". now go to home page.";
-                return true
-            }
-
-            else if (!validUser(elementId)) {
-                console.log("false");
-                let h1 = document.querySelector("h2");
-                h1.innerHTML = "invalid unsername , try again";
-                return false
-            } else if(document.getElementById("userSet").getAttribute("exists") === true){
-                console.log("false2");
-                let h1 = document.querySelector("h2");
-                h1.innerHTML = "username unavailable , try again";
-                console.log("already set");
-                return false
-            }
-
-        }
-    </script>
+    <script src="../views/js/login.js"></script>
 </body>
 
 </html>
