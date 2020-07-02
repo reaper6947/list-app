@@ -1,5 +1,5 @@
 <%- include("header") -%>
-
+<%- include("nav") -%>
   <div class="box py-0" id="heading">
     <h1 id=""> <%= listTitle %> </h1>
   </div>
@@ -11,7 +11,7 @@
 
     <form action="/delete" method="post">
       <div class="item">
-        <input type="checkbox" name="checkbox" value="<%=item._id%>" onChange="this.form.submit()">
+        <input type="checkbox" class="inputItemDelete" name="checkbox" value="<%=item._id%>" onChange="this.form.submit()" disabled >
         <p class="overflow-auto"><%=item.name%></p>
       </div>
       <input class="overflow-auto" type="hidden" name="listName" value="<%= listTitle %>"></input>
@@ -19,10 +19,17 @@
   <%  }) %>
 
 
-      <form class="item" action="/" id="form-add" method="post">
-        <input class ="flex-fill" type="text" name="newItem" placeholder="New Item" autocomplete="off">
-        <button  class="float-right ml-auto p-2 submit-btn" type="submit" name="list" value="<%= listTitle %>"><i class="fa fa-plus-circle fa-2x"></i></button>
+      <form class="item " action="/" id="form-add" method="post">
+        <input class ="flex-fill" type="text" name="newItem" placeholder="New Item" autocomplete="off" id="inputItem">
+        <button  class="float-right ml-auto px-1 submit-btn" type="submit" name="list" value="<%= listTitle %>">
+          <img  class = "m-0" src="../svg/plus-circle.svg" width="40" id="plus-circle" >
+        </button>
       </form>
   </div>
 
+
+
+
+
+  <script src="../views/js/list.js"></script>
 <%- include("footer") -%>

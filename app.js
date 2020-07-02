@@ -2,7 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
-const _ = require("lodash");
 const app = express();
 const path = require("path");
 app.set("view engine", "ejs");
@@ -12,6 +11,8 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 const shortid = require('shortid');
 const List = require("./model/listschema");
+const { defaultItems, Item } = require("./model/defaultitem");
+
 //connect to database
 
 mongoose.connect(
@@ -21,28 +22,6 @@ mongoose.connect(
     console.log("mongodb connected", err);
   }
 );
-
-const itemsSchema = {
-  name: String,
-};
-
-const Item = mongoose.model("Item", itemsSchema);
-
-
-
-const item1 = new Item({
-  name: "Welcome to your todolist!",
-});
-
-const item2 = new Item({
-  name: "Hit the + button to add a new item.",
-});
-
-const item3 = new Item({
-  name: "<-- Hit this to delete an item.",
-});
-
-const defaultItems = [item1, item2, item3];
 
 
 app.get("/", function (req, res) {
@@ -64,6 +43,7 @@ app.get("/", function (req, res) {
 });
 
 /*
+
 app.get("/:customListName", function (req, res) {
   const customListName = req.params.customListName ;
 
@@ -113,10 +93,12 @@ app.post("/", function (req, res) {
 });
 
 
+
+
 app.post("/delete", function (req, res) {
   const checkedItemId = req.body.checkbox;
   const listName = req.body.listName;
-
+  console.log(req.body);
   if (listName === "Today") {
     Item.findOneAndDelete(checkedItemId, function (err) {
       if (!err) {
@@ -149,6 +131,15 @@ app.post("/login", function (req, res) {
 app.get("/login", function (req, res) {
   res.render("login");
 });
+
+app.get("/user",(req,res)=> {
+  res.render("user");
+})
+
+
+
+
+
 
 app.get("/exists/:user", function (req, res) {
  // console.log(req.params);

@@ -1,4 +1,3 @@
-console.log("workings");
 const navName = document.getElementById("nav-username");
 
 
@@ -8,6 +7,24 @@ if ( !localStorage.hasOwnProperty("user-name") && localStorage.getItem("user-nam
   navName.innerText = localStorage.getItem("user-name");
 }
   
+
+
+const validInput = function () {
+  const id = "inputTitle"
+  let userId = document.getElementById(id).value.trim();
+  if (
+    userId === null ||
+    userId === "undefined" ||
+    userId === "null" ||
+    userId.length > 20 ||
+    userId.length < 2
+  ) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 
 
 const showEdit = function (checkbox) {
@@ -26,9 +43,5 @@ const showEdit = function (checkbox) {
 }
 
 
-
-
-
- 
 
 

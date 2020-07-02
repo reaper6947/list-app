@@ -1,5 +1,5 @@
 html {
-  background-color: #3a3d57;
+  background-color: #181A1B;
   font-family: 'helvetica neue';
 }
 body{
@@ -8,17 +8,32 @@ body{
 }
 .nav{
 background-color: #374e57 !important;
+
 }
+
+#labelDelete{
+  color:#F1F1F1;
+}
+
 
 h1 {
   color: #95adbe;
   padding: .1em;
 }
 
+.title-card{
+ min-width: 15em !important;
+ 
+}
+
+
+
+
+
 .box {
   
   margin: 1em auto;
-  background: #574f7d;
+  background: #463F64;
   border-radius: 5px;
 
 }
@@ -75,11 +90,27 @@ input[type="text"] {
   top: 10px;
   border: none;
   background: transparent;
-  font-size: 1.2em;
+  font-size: 1.1em;
   font-weight: 350;
   
   color: #e0f0ea;
 }
+
+
+#inputTitle {
+  text-align: center;
+  height: 2.7em;
+  top: 10px;
+  border: none;
+  background: transparent;
+  font-size: 1.1em;
+  font-weight: 350;
+  
+  color: #e0f0ea;
+}
+
+
+
 
 input[type="text"]:focus {
   outline: none;
@@ -93,6 +124,6 @@ input[type="text"]:focus {
 
 footer {
   color: white;
-  color: rgba(0, 0, 0, 0.5);
+  color: #E8E6E3;
   text-align: center;
 }

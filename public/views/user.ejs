@@ -1,0 +1,58 @@
+<%- include("header") -%>
+<%- include("nav") -%>
+
+
+
+
+<div class="card-columns ">
+
+
+    <div class="card text-white bg-dark my-2 mx-auto text-center title-card py-0">
+        <form class="m-0 p-0" action=""  method="post" onsubmit=" return validInput()" >
+        <div class="card-header  p-0 m-0">
+            <input class=" py-0 m-0 w-100 " type="text" name="newItem" placeholder="New List title" autocomplete="off" id="inputTitle" required maxlength="20">
+        </div>
+        <div class="card-body py-0">
+            
+            <button class="submit-btn m-0 py-1" type="submit" name="list" value=""  >
+                <img class="m-0 p-0" src="../svg/plus-circle.svg" width="50" id="plus-circle">
+            </button>
+        </div>
+        </form>
+    </div>
+
+
+    <div class="card text-white bg-dark my-2  title-card py-0 ">
+        <div class="card-header ">
+            <input  class="float-right inputItemDelete" type="checkbox" class="inputItemDelete" name="checkbox" value="" onChange="this.form.submit()" disabled >
+            Anime
+        </div>
+        <div class="card-body text-center py-0">
+            
+            <button class="submit-btn m-0 py-1" type="submit" name="list" value="">
+                <img class="m-0 p-0" src="../svg/edit.svg" width="50" id="plus-circle">
+            </button>
+            
+        </div>
+    </div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="../views/js/user.js"></script>
+<%- include("footer") -%>
