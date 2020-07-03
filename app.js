@@ -82,21 +82,25 @@ app.post("/new/list", function (req, res) {
 });
 
 app.post("/delete/item", function (req, res) {
-  const checkedItemId = req.body.checkbox;
-  const { listName, listUrl, listAuthor } = req.body;
+  
+  const { listName, listUrl, listAuthor,itemId } = req.body;
 
   console.log(req.body);
+
   List.findOneAndUpdate(
     {
       name: listName,
-      author: listAuthor,
       url: listUrl,
-      $pull: { items: { _id: checkedItemId } },
+      author: listAuthor
     },
-
-    function (err, foundList) {
+    {$pull: {  items:{ _id:itemId}}},
+    
+    function (err) {
       if (!err) {
+        console.log("deleted item")
         res.redirect("/list/" + listUrl);
+      } else {
+        console.log(err)
       }
     }
   );
@@ -104,21 +108,18 @@ app.post("/delete/item", function (req, res) {
 
 app.post("/new/item", function (req, res) {
   const { listAuthor, listId, newItem, listName, listUrl } = req.body;
-  console.log(req.body);
+  //console.log(req.body);
 
   List.findOneAndUpdate(
     {
       name: listName,
       url: listUrl,
       author: listAuthor,
+      _id: listId,
     },
-
+    { $push: { items: [{ name: newItem }] } },
     function (err, foundList) {
-      console.log(foundList);
       if (!err) {
-        
-        foundList.items.push({ name: newItem });
-        foundList.save();
         console.log("new item saved");
         res.redirect("/list/" + listUrl);
       } else {
@@ -126,9 +127,7 @@ app.post("/new/item", function (req, res) {
       }
     }
   );
-  res.redirect("/list/" + listUrl);
 });
-
 
 app.get("/login", function (req, res) {
   res.render("login");

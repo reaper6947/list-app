@@ -2,13 +2,13 @@ console.log("workings");
 const navName = document.getElementById("nav-username");
 const checkboxDelete = document.getElementById("inputDelete");
 const listAuthor = document.getElementById("listAuthor");
-
+const labelDelete = document.getElementById("labelDelete");
 if (!localStorage.hasOwnProperty("user-name")) {
   console.log("not logged in");
 
   //window.location.href = "/login";
 } else if (localStorage.getItem("user-name") != listAuthor.value) {
-  checkboxDelete.style.display = "none";
+  labelDelete.style.display = "none";
 }
 
 if (localStorage.hasOwnProperty("user-name")) {
