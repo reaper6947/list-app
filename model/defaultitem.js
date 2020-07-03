@@ -25,4 +25,26 @@ const item4 = new Item({
 const defaultItems = [item1, item2, item3, item4];
 
 
-module.exports = { defaultItems , Item };
+
+const info1 = new Item({
+  name: "You can share this page link with anybody and they can only view"
+});
+
+const info2 = new Item({
+  name: "Go to main page to see your account access link(working on it)  "
+});
+
+const info3 = new Item({
+  name: "Visit the tutorial list for more info "
+});
+
+
+
+
+const newListItems = [info1, info2, info3];
+
+
+
+
+
+module.exports = { defaultItems , Item ,newListItems };

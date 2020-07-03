@@ -1,27 +1,31 @@
 <%- include("header") -%>
 <%- include("nav") -%>
   <div class="box py-0" id="heading">
-    <h1 id=""> <%= listTitle %> </h1>
+    <h1 id=""> <%= data.name %> </h1>
   </div>
 
   <div class="box">
 
 
-  <%  newListItems.forEach(function(item){ %>
+  <%  data.items.forEach(function(item){ %>
 
-    <form action="/delete" method="post">
+    <form action="/delete/item" method="post">
       <div class="item">
-        <input type="checkbox" class="inputItemDelete" name="checkbox" value="<%=item._id%>" onChange="this.form.submit()" disabled >
+        <input type="checkbox" class="inputItemDelete" name="itemId" value="<%=item._id%>" onChange="this.form.submit()" disabled >
         <p class="overflow-auto"><%=item.name%></p>
       </div>
-      <input class="overflow-auto" type="hidden" name="listName" value="<%= listTitle %>"></input>
+      <input class="overflow-auto" type="hidden" name="listName" value="<%= data.name %>">
+      <input class="overflow-auto" type="hidden" name="listUrl" value="<%= data.url %>" >
     </form>
   <%  }) %>
 
 
-      <form class="item " action="/" id="form-add" method="post">
+      <form class="item" name="sendItem" action="/new/item" id="form-add" method="post">
+        <input class="overflow-auto" type="hidden" name="listUrl" value="<%= data.url %>">
+        <input class="overflow-auto" type="hidden" name="listAuthor" value="<%= data.author %>" id="listAuthor">
+        <input class="overflow-auto" type="hidden" name="listId" value="<%= data._id %>">
         <input class ="flex-fill" type="text" name="newItem" placeholder="New Item" autocomplete="off" id="inputItem">
-        <button  class="float-right ml-auto px-1 submit-btn" type="submit" name="list" value="<%= listTitle %>">
+        <button  class="float-right ml-auto px-1 submit-btn" type="submit" name="listName" value="<%= data.name %>">
           <img  class = "m-0" src="../svg/plus-circle.svg" width="40" id="plus-circle" >
         </button>
       </form>

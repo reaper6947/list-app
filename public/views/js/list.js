@@ -1,34 +1,50 @@
 console.log("workings");
 const navName = document.getElementById("nav-username");
+const checkboxDelete = document.getElementById("inputDelete");
+const listAuthor = document.getElementById("listAuthor");
 
+if (!localStorage.hasOwnProperty("user-name")) {
+  console.log("not logged in");
 
-if ( !localStorage.hasOwnProperty("user-name") && localStorage.getItem("user-name") == null ) {
-    window.location.href = "/login";
-} else if (localStorage.hasOwnProperty("user-name") && localStorage.getItem("user-name") != null) {
+  //window.location.href = "/login";
+} else if (localStorage.getItem("user-name") != listAuthor.value) {
+  checkboxDelete.style.display = "none";
+}
+
+if (localStorage.hasOwnProperty("user-name")) {
   navName.innerText = localStorage.getItem("user-name");
 }
-  
 
 
-const showEdit = function (checkbox) {
+if (localStorage.hasOwnProperty("itemDelete")) {
   let items = document.getElementsByClassName("inputItemDelete");
-
-  if (checkbox.checked) {
-    for ( i = 0; i < items.length; i++){
+  if (localStorage.getItem("itemDelete") == "checked") {
+    checkboxDelete.checked = true;
+    for (i = 0; i < items.length; i++) {
       items[i].disabled = false;
     }
-  } else {
-    //let items = document.getElementsByClassName("inputItemDelete");
-    for ( i = 0; i < items.length; i++){
-      items[i].disabled = true ;
+  } else if (!localStorage.getItem("itemDelete") == "notchecked") {
+    checkboxDelete.checked = false;
+    for (i = 0; i < items.length; i++) {
+      items[i].disabled = true;
     }
   }
+} else {
+  console.log("elsed");
 }
 
+checkboxDelete.addEventListener("change", function (deletebox) {
+  let items = document.getElementsByClassName("inputItemDelete");
 
-
-
-
- 
-
-
+  if (deletebox.target.checked) {
+    localStorage.setItem("itemDelete", "checked");
+    for (i = 0; i < items.length; i++) {
+      items[i].disabled = false;
+    }
+  } else if (!deletebox.target.checked) {
+    localStorage.setItem("itemDelete", "notchecked");
+    for (i = 0; i < items.length; i++) {
+      items[i].disabled = true;
+    }
+  }
+});

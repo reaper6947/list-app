@@ -5,9 +5,7 @@ if ( window.history.replaceState ) {
 }
 
 if (
-  localStorage.hasOwnProperty("user-name") &&
-  localStorage.getItem("user-name") != null
-) {
+  localStorage.hasOwnProperty("user-name")) {
   let h = document.getElementById("h-username");
   h.innerHTML =
     "your current username is " +
@@ -17,6 +15,7 @@ if (
   btn.style.display = "none";
   btn.disabled = true;
   console.log("nofunc");
+  window.location.href = "/user" + localStorage.getItem("user-name");
   //  btn.style.display = "none";
 } else {
   console.log("elsed");

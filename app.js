@@ -9,122 +9,124 @@ app.set("views", path.join(__dirname, "/public/views"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
-const shortid = require('shortid');
+const shortid = require("shortid");
 const List = require("./model/listschema");
-const { defaultItems, Item } = require("./model/defaultitem");
+const { defaultItems, Item, newListItems } = require("./model/defaultitem");
 
 //connect to database
 
 mongoose.connect(
   process.env.DBURL,
-  { useNewUrlParser: true, useUnifiedTopology: true , useFindAndModify: false },
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
   (err) => {
     console.log("mongodb connected", err);
   }
 );
 
-
 app.get("/", function (req, res) {
-  Item.find({}, function (err, foundItems) {
-    if (foundItems.length === 0) {
-      Item.insertMany(defaultItems, function (err) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Successfully savevd default items to DB.");
-        }
-      });
-      res.redirect("/");
-    } else {
+  res.render("index");
+});
 
-      res.render("list", { listTitle: "Today", newListItems: foundItems });
+app.get("/list/:listUrl", function (req, res) {
+  const { listUrl } = req.params;
+  List.findOne({ url: listUrl }, function (err, foundList) {
+    if (err) {
+      console.log(err);
     }
+    res.render("list", { data: foundList });
   });
 });
 
-/*
+app.post("/delete/list", function (req, res) {
+  const { listName, listAuthor, listId, listUrl } = req.body;
+  List.findOneAndDelete(
+    {
+      name: listName,
+      _id: listId,
+      url: listUrl,
+      author: listAuthor,
+    },
 
-app.get("/:customListName", function (req, res) {
-  const customListName = req.params.customListName ;
-
-  List.findOne({ name: customListName }, function (err, foundList) {
-    if (!err) {
-      if (!foundList) {
-        //Create a new list
-        const list = new List({
-          name: customListName,
-          items: defaultItems,
-        });
-        list.save();
-        res.redirect("/" + customListName);
-      } else {
-        //Show an existing list
-
-        res.render("list", {
-          listTitle: foundList.name,
-          newListItems: foundList.items,
-          titleId: foundList._id,
-        });
-      }
-    }
-  });
-});
-*/
-
-app.post("/", function (req, res) {
-  console.log(req.body);
-  const itemName = req.body.newItem;
-  const listName = req.body.list;
-
-  const item = new Item({
-    name: itemName,
-  });
-
-  if (listName === "Today") {
-    item.save();
-    res.redirect("/");
-  } else {
-    List.findOne({ name: listName }, function (err, foundList) {
-      foundList.items.push(item);
-      foundList.save();
-      res.redirect("/" + listName);
-    });
-  }
-});
-
-
-
-
-app.post("/delete", function (req, res) {
-  const checkedItemId = req.body.checkbox;
-  const listName = req.body.listName;
-  console.log(req.body);
-  if (listName === "Today") {
-    Item.findOneAndDelete(checkedItemId, function (err) {
+    function (err) {
       if (!err) {
-        console.log("Successfully deleted checked item.");
-        res.redirect("/");
+        console.log("deleted list " + listName);
+        res.redirect("/user/" + listAuthor);
+      } else {
+        console.log(err);
       }
-    });
-  } else {
-    List.findOneAndUpdate(
-      { name: listName },
-      { $pull: { items: { _id: checkedItemId } } },
-      function (err, foundList) {
-        if (!err) {
-          res.redirect("/" + listName);
-        }
-      }
-    );
-  }
+    }
+  );
 });
 
+app.post("/new/list", function (req, res) {
+  // console.log(req.body);
+  const { newListAuthor, newListName } = req.body;
+  List.find({ author: newListAuthor }, function (err, foundList) {
+    if (err) {
+      throw err;
+    }
+    if (foundList.length) {
+      //Create a new list
+      const list = new List({
+        url: shortid.generate(),
+        author: newListAuthor,
+        name: newListName,
+        items: newListItems,
+      });
+      list.save();
+      // console.log(list._id);
+      console.log("new user list saved by " + newListAuthor);
+      res.redirect("/user/" + newListAuthor);
+    }
+  });
+});
 
+app.post("/delete/item", function (req, res) {
+  const checkedItemId = req.body.checkbox;
+  const { listName, listUrl, listAuthor } = req.body;
 
-app.post("/login", function (req, res) {
-  let { username } = req.body;
   console.log(req.body);
-  res.render("login");
+  List.findOneAndUpdate(
+    {
+      name: listName,
+      author: listAuthor,
+      url: listUrl,
+      $pull: { items: { _id: checkedItemId } },
+    },
+
+    function (err, foundList) {
+      if (!err) {
+        res.redirect("/list/" + listUrl);
+      }
+    }
+  );
+});
+
+app.post("/new/item", function (req, res) {
+  const { listAuthor, listId, newItem, listName, listUrl } = req.body;
+  console.log(req.body);
+
+  List.findOneAndUpdate(
+    {
+      name: listName,
+      url: listUrl,
+      author: listAuthor,
+    },
+
+    function (err, foundList) {
+      console.log(foundList);
+      if (!err) {
+        
+        foundList.items.push({ name: newItem });
+        foundList.save();
+        console.log("new item saved");
+        res.redirect("/list/" + listUrl);
+      } else {
+        console.log(err);
+      }
+    }
+  );
+  res.redirect("/list/" + listUrl);
 });
 
 
@@ -132,45 +134,62 @@ app.get("/login", function (req, res) {
   res.render("login");
 });
 
-app.get("/user",(req,res)=> {
-  res.render("user");
-})
+app.post("/login", function (req, res) {
+  const { username } = req.body;
+  List.find({ author: username }, function (err, foundList) {
+    if (err) {
+      throw err;
+    }
+    if (!foundList.length) {
+      //Create a new list
+      const list = new List({
+        url: shortid.generate(),
+        author: username,
+        name: "tutorial",
+        items: defaultItems,
+      });
+      list.save();
+      // console.log(list._id);
+      console.log("tutorial list saved by " + username);
+    }
+  });
+  res.render("login");
+});
 
-
-
-
-
+app.get("/user/:username", (req, res) => {
+  const { username } = req.params;
+  List.find({ author: username }, "_.id url  author name ", function (
+    err,
+    foundTitles
+  ) {
+    if (err) {
+      throw err;
+    } else if (foundTitles.length) {
+      //  console.log(foundTitles)
+      res.render("user", {
+        titleData: foundTitles,
+      });
+    }
+  });
+});
 
 app.get("/exists/:user", function (req, res) {
- // console.log(req.params);
+  // console.log(req.params);
   const { user } = req.params;
   List.exists({ author: user }, function (err, result) {
     if (err) {
       res.json(err);
     } else if (result) {
-     // console.log("true");
+      // console.log("true");
       res.json(true);
     } else if (!result) {
-    //  console.log("false");
+      //  console.log("false");
       res.json(false);
     }
   });
 });
 
-
-
-
-app.post("/edit", function (req, res) {
-  console.log(req.body);
-  res.redirect("/")
-});
-
-
-
-
-
-
 const PORT = 3000 || process.env.PORT;
 app.listen(PORT, function () {
-  console.log("Server started on port "+ PORT );
+  console.log("Server started on port " + PORT);
 });
