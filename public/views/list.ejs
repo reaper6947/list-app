@@ -21,11 +21,11 @@
   <%  }) %>
 
 
-      <form class="item" name="sendItem" action="/new/item" id="form-add" method="post">
+      <form class="item" name="sendItem" action="/new/item" id="form-add" method="post" >
         <input class="overflow-auto" type="hidden" name="listUrl" value="<%= data.url %>">
         <input class="overflow-auto" type="hidden" name="listAuthor" value="<%= data.author %>" id="listAuthor">
         <input class="overflow-auto" type="hidden" name="listId" value="<%= data._id %>">
-        <input class ="flex-fill" type="text" name="newItem" placeholder="New Item" autocomplete="off" id="inputItem">
+        <input class ="flex-fill" type="text" name="newItem" placeholder="New Item" autocomplete="off" id="inputItem" required >
         <button  class="float-right ml-auto px-1 submit-btn" type="submit" name="listName" value="<%= data.name %>">
           <img  class = "m-0" src="../svg/plus-circle.svg" width="40" id="plus-circle" >
         </button>

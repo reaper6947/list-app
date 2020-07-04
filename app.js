@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 const shortid = require("shortid");
 const List = require("./model/listschema");
-const { defaultItems, Item, newListItems } = require("./model/defaultitem");
+const { defaultItems,  newListItems } = require("./model/defaultitem");
 
 //connect to database
 
@@ -27,166 +27,21 @@ app.get("/", function (req, res) {
   res.render("index");
 });
 
-app.get("/list/:listUrl", function (req, res) {
-  const { listUrl } = req.params;
-  List.findOne({ url: listUrl }, function (err, foundList) {
-    if (err) {
-      console.log(err);
-    }
-    res.render("list", { data: foundList });
-  });
-});
-
-app.post("/delete/list", function (req, res) {
-  const { listName, listAuthor, listId, listUrl } = req.body;
-  List.findOneAndDelete(
-    {
-      name: listName,
-      _id: listId,
-      url: listUrl,
-      author: listAuthor,
-    },
-
-    function (err) {
-      if (!err) {
-        console.log("deleted list " + listName);
-        res.redirect("/user/" + listAuthor);
-      } else {
-        console.log(err);
-      }
-    }
-  );
-});
-
-app.post("/new/list", function (req, res) {
-  // console.log(req.body);
-  const { newListAuthor, newListName } = req.body;
-  List.find({ author: newListAuthor }, function (err, foundList) {
-    if (err) {
-      throw err;
-    }
-    if (foundList.length) {
-      //Create a new list
-      const list = new List({
-        url: shortid.generate(),
-        author: newListAuthor,
-        name: newListName,
-        items: newListItems,
-      });
-      list.save();
-      // console.log(list._id);
-      console.log("new user list saved by " + newListAuthor);
-      res.redirect("/user/" + newListAuthor);
-    }
-  });
-});
-
-app.post("/delete/item", function (req, res) {
-  
-  const { listName, listUrl, listAuthor,itemId } = req.body;
-
-  console.log(req.body);
-
-  List.findOneAndUpdate(
-    {
-      name: listName,
-      url: listUrl,
-      author: listAuthor
-    },
-    {$pull: {  items:{ _id:itemId}}},
-    
-    function (err) {
-      if (!err) {
-        console.log("deleted item")
-        res.redirect("/list/" + listUrl);
-      } else {
-        console.log(err)
-      }
-    }
-  );
-});
-
-app.post("/new/item", function (req, res) {
-  const { listAuthor, listId, newItem, listName, listUrl } = req.body;
-  //console.log(req.body);
-
-  List.findOneAndUpdate(
-    {
-      name: listName,
-      url: listUrl,
-      author: listAuthor,
-      _id: listId,
-    },
-    { $push: { items: [{ name: newItem }] } },
-    function (err, foundList) {
-      if (!err) {
-        console.log("new item saved");
-        res.redirect("/list/" + listUrl);
-      } else {
-        console.log(err);
-      }
-    }
-  );
-});
-
 app.get("/login", function (req, res) {
   res.render("login");
 });
 
-app.post("/login", function (req, res) {
-  const { username } = req.body;
-  List.find({ author: username }, function (err, foundList) {
-    if (err) {
-      throw err;
-    }
-    if (!foundList.length) {
-      //Create a new list
-      const list = new List({
-        url: shortid.generate(),
-        author: username,
-        name: "tutorial",
-        items: defaultItems,
-      });
-      list.save();
-      // console.log(list._id);
-      console.log("tutorial list saved by " + username);
-    }
-  });
-  res.render("login");
-});
+app.get("/list/:listUrl",require("./routes/getlisturl"));
+app.post("/delete/list", require("./routes/deletelist"));
+app.post("/new/list", require("./routes/postlist"));
+app.post("/delete/item", require("./routes/deleteitem"));
+app.post("/new/item", require("./routes/postitem"));
+app.post("/login",require("./routes/postlogin") );
+app.get("/user/:username",require("./routes/gettitle"));
+app.get("/exists/:user", require("./routes/userexists"));
 
-app.get("/user/:username", (req, res) => {
-  const { username } = req.params;
-  List.find({ author: username }, "_.id url  author name ", function (
-    err,
-    foundTitles
-  ) {
-    if (err) {
-      throw err;
-    } else if (foundTitles.length) {
-      //  console.log(foundTitles)
-      res.render("user", {
-        titleData: foundTitles,
-      });
-    }
-  });
-});
 
-app.get("/exists/:user", function (req, res) {
-  // console.log(req.params);
-  const { user } = req.params;
-  List.exists({ author: user }, function (err, result) {
-    if (err) {
-      res.json(err);
-    } else if (result) {
-      // console.log("true");
-      res.json(true);
-    } else if (!result) {
-      //  console.log("false");
-      res.json(false);
-    }
-  });
-});
+
 
 const PORT = 3000 || process.env.PORT;
 app.listen(PORT, function () {

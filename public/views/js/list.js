@@ -3,29 +3,32 @@ const navName = document.getElementById("nav-username");
 const checkboxDelete = document.getElementById("inputDelete");
 const listAuthor = document.getElementById("listAuthor");
 const labelDelete = document.getElementById("labelDelete");
-if (!localStorage.hasOwnProperty("user-name")) {
-  console.log("not logged in");
+const formSend = document.getElementById("form-add");
 
-  //window.location.href = "/login";
-} else if (localStorage.getItem("user-name") != listAuthor.value) {
+
+if (localStorage.getItem("user-name") != listAuthor.value) {
   labelDelete.style.display = "none";
+  formSend.style.display = "none";
 }
 
 if (localStorage.hasOwnProperty("user-name")) {
   navName.innerText = localStorage.getItem("user-name");
+} else {
+  navName.innerText = "Sign up";
+  labelDelete.style.display = "none";
+  formSend.style.display = "none";
 }
-
 
 if (localStorage.hasOwnProperty("itemDelete")) {
   let items = document.getElementsByClassName("inputItemDelete");
   if (localStorage.getItem("itemDelete") == "checked") {
     checkboxDelete.checked = true;
-    for (i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       items[i].disabled = false;
     }
   } else if (!localStorage.getItem("itemDelete") == "notchecked") {
     checkboxDelete.checked = false;
-    for (i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       items[i].disabled = true;
     }
   }
@@ -38,12 +41,12 @@ checkboxDelete.addEventListener("change", function (deletebox) {
 
   if (deletebox.target.checked) {
     localStorage.setItem("itemDelete", "checked");
-    for (i = 0; i < items.length; i++) {
+    for ( let i = 0; i < items.length; i++) {
       items[i].disabled = false;
     }
   } else if (!deletebox.target.checked) {
     localStorage.setItem("itemDelete", "notchecked");
-    for (i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       items[i].disabled = true;
     }
   }

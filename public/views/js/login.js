@@ -15,7 +15,7 @@ if (
   btn.style.display = "none";
   btn.disabled = true;
   console.log("nofunc");
-  window.location.href = "/user" + localStorage.getItem("user-name");
+  window.location.href = "/user/" + localStorage.getItem("user-name");
   //  btn.style.display = "none";
 } else {
   console.log("elsed");
